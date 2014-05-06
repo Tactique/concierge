@@ -26,7 +26,11 @@ def check_output(*popenargs, **kwargs):
     return output
 
 class Concierge:
-    def __init__(self, config_file):
+    def __init__(self, config_file, dir_path=None):
+        if dir_path is None:
+            self.dir_path = os.path.join(file_dir, 'repos')
+        else:
+            self.dir_path = dir_path
         config = configparser.SafeConfigParser()
         config.read(config_file)
         repo_section = 'repos'
@@ -38,6 +42,9 @@ class Concierge:
         self.protocol = config.get(git_section, 'protocol')
         self.remote = config.get(git_section, 'remote')
         self.organization = config.get(git_section, 'organization')
+
+    def _mkdir_repos(self):
+        os.mkdir(self.dir_path)
 
     def reset_all(self):
         self.clear_all()
@@ -54,19 +61,19 @@ class Concierge:
         for repo in self.repos:
             full_repo_description = get_full_repo_description(
                 self.protocol, self.remote, self.organization, repo)
-            output = check_output(['git', 'clone', full_repo_description])
+            output = check_output(['git', 'clone', full_repo_description], cwd=self.dir_path)
             print(repo)
             print(output)
 
     def setup_main(self):
         for repo in self.setup_order:
-            output = check_output(['./setup.sh'], cwd=os.path.join(file_dir, repo))
+            output = check_output(['./setup.sh'], cwd=os.path.join(self.dir_path, repo))
             print(repo)
             print(output)
 
     def run_runners(self):
         for repo in self.run_repos:
-            output = check_output(['./run.sh'], cwd=os.path.join(file_dir, repo))
+            output = check_output(['./run.sh'], cwd=os.path.join(self.dir_path, repo))
             print(repo)
             print(output)
 
@@ -97,6 +104,7 @@ commands = {
     'setup': 'setup_main',
     'run': 'run_runners',
     'kill': 'kill_runners',
+    'mkdir': '_mkdir_repos',
 }
 
 
