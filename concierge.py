@@ -22,7 +22,7 @@ def check_output(*popenargs, **kwargs):
         cmd = kwargs.get("args")
         if cmd is None:
             cmd = popenargs[0]
-        raise subprocess.CalledProcessError(retcode, cmd, output=output)
+        raise subprocess.CalledProcessError(retcode, cmd)
     return output
 
 class Concierge:
@@ -39,6 +39,17 @@ class Concierge:
         self.remote = config.get(git_section, 'remote')
         self.organization = config.get(git_section, 'organization')
 
+    def reset_all(self):
+        self.clear_all()
+        self.clone_all()
+        self.setup_main()
+
+    def clear_all(self):
+        for repo in self.repos:
+            output = check_output(['rm', '-rf', repo])
+            print(repo)
+            print(output)
+
     def clone_all(self):
         for repo in self.repos:
             full_repo_description = get_full_repo_description(
@@ -46,6 +57,24 @@ class Concierge:
             output = check_output(['git', 'clone', full_repo_description])
             print(repo)
             print(output)
+
+    def setup_main(self):
+        for repo in self.setup_order:
+            output = check_output(['./setup.sh'], cwd=os.path.join(file_dir, repo))
+            print(repo)
+            print(output)
+
+    def run_runners(self):
+        for repo in self.run_repos:
+            output = check_output(['./run.sh'], cwd=os.path.join(file_dir, repo))
+            print(repo)
+            print(output)
+
+    def kill_runners(self):
+        output = check_output(['pkill', 'tactique'])
+        print(output)
+        output = check_output(['pkill', 'python'])
+        print(output)
 
 
 def get_full_repo_description(protocol, remote, organization, repo):
@@ -62,7 +91,12 @@ def get_full_repo_description(protocol, remote, organization, repo):
 
 
 commands = {
+    'reset': 'reset_all',
+    'clear': 'clear_all',
     'clone': 'clone_all',
+    'setup': 'setup_main',
+    'run': 'run_runners',
+    'kill': 'kill_runners',
 }
 
 
