@@ -69,6 +69,12 @@ class Concierge:
             print(repo)
             print(output)
 
+    def sync_all(self):
+        for repo in self.repos:
+            output = check_output(['git', 'pull', '--rebase'], cwd=os.path.join(self.dir_path, repo))
+            print(repo)
+            print(output)
+
     def setup_main(self):
         for repo in self.setup_order:
             output = check_output(['./setup.sh'], cwd=os.path.join(self.dir_path, repo))
@@ -106,6 +112,7 @@ commands = {
     'clear': 'clear_all',
     'clone': 'clone_all',
     'setup': 'setup_main',
+    'sync': 'sync_all',
     'run': 'run_runners',
     'kill': 'kill_runners',
 }
