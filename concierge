@@ -25,6 +25,7 @@ def check_output(*popenargs, **kwargs):
         raise subprocess.CalledProcessError(retcode, cmd)
     return output
 
+
 class Concierge:
     def __init__(self, config_file, dir_path=None):
         if dir_path is None:
@@ -46,6 +47,9 @@ class Concierge:
     def _mkdir_repos(self):
         os.mkdir(self.dir_path)
 
+    def _get_repo_dir(self, repo):
+        return os.path.join(self.dir_path, repo)
+
     def bootstrap_all(self):
         self.clone_all()
         self.setup_main()
@@ -57,7 +61,7 @@ class Concierge:
 
     def clear_all(self):
         for repo in self.repos:
-            output = check_output(['rm', '-rf', os.path.join(self.dir_path, repo)])
+            output = check_output(['rm', '-rf', self._get_repo_dir])
             print(repo)
             print(output)
 
@@ -75,25 +79,25 @@ class Concierge:
 
     def sync_all(self):
         for repo in self.repos:
-            output = check_output(['git', 'pull', '--rebase'], cwd=os.path.join(self.dir_path, repo))
+            output = check_output(['git', 'pull', '--rebase'], cwd=self._get_repo_dir(repo))
             print(repo)
             print(output)
 
     def status_all(self):
         for repo in self.repos:
-            output = check_output(['git', 'status'], cwd=os.path.join(self.dir_path, repo))
+            output = check_output(['git', 'status'], cwd=self._get_repo_dir(repo))
             print(repo)
             print(output)
 
     def setup_main(self):
         for repo in self.setup_order:
-            output = check_output(['./setup.sh'], cwd=os.path.join(self.dir_path, repo))
+            output = check_output(['./setup.sh'], cwd=self._get_repo_dir(repo))
             print(repo)
             print(output)
 
     def run_runners(self):
         for repo in self.run_repos:
-            output = check_output(['./run.sh'], cwd=os.path.join(self.dir_path, repo))
+            output = check_output(['./run.sh'], cwd=self._get_repo_dir(repo))
             print(repo)
             print(output)
 
