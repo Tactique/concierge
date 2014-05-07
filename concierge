@@ -79,6 +79,12 @@ class Concierge:
             print(repo)
             print(output)
 
+    def status_all(self):
+        for repo in self.repos:
+            output = check_output(['git', 'status'], cwd=os.path.join(self.dir_path, repo))
+            print(repo)
+            print(output)
+
     def setup_main(self):
         for repo in self.setup_order:
             output = check_output(['./setup.sh'], cwd=os.path.join(self.dir_path, repo))
@@ -116,8 +122,9 @@ commands = {
     'reset': 'reset_all',
     'clear': 'clear_all',
     'clone': 'clone_all',
-    'setup': 'setup_main',
     'sync': 'sync_all',
+    'status': 'status_all',
+    'setup': 'setup_main',
     'run': 'run_runners',
     'kill': 'kill_runners',
 }
