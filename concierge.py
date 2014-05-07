@@ -58,6 +58,10 @@ class Concierge:
             print(output)
 
     def clone_all(self):
+        try:
+            self._mkdir_repos()
+        except OSError:
+            pass
         for repo in self.repos:
             full_repo_description = get_full_repo_description(
                 self.protocol, self.remote, self.organization, repo)
@@ -104,7 +108,6 @@ commands = {
     'setup': 'setup_main',
     'run': 'run_runners',
     'kill': 'kill_runners',
-    'mkdir': '_mkdir_repos',
 }
 
 
