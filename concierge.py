@@ -53,7 +53,7 @@ class Concierge:
 
     def clear_all(self):
         for repo in self.repos:
-            output = check_output(['rm', '-rf', repo])
+            output = check_output(['rm', '-rf', os.path.join(self.dir_path, repo)])
             print(repo)
             print(output)
 
