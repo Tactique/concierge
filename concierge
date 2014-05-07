@@ -46,6 +46,10 @@ class Concierge:
     def _mkdir_repos(self):
         os.mkdir(self.dir_path)
 
+    def bootstrap_all(self):
+        self.clone_all()
+        self.setup_main()
+
     def reset_all(self):
         self.clear_all()
         self.clone_all()
@@ -108,6 +112,7 @@ def get_full_repo_description(protocol, remote, organization, repo):
 
 
 commands = {
+    'bootstrap': 'bootstrap_all',
     'reset': 'reset_all',
     'clear': 'clear_all',
     'clone': 'clone_all',
