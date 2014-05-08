@@ -52,6 +52,7 @@ class Concierge:
 
     def bootstrap_all(self):
         self.clone_all()
+        self.deps_main()
         self.setup_main()
 
     def reset_all(self):
