@@ -89,6 +89,12 @@ class Concierge:
             print(repo)
             print(output)
 
+    def deps_main(self):
+        for repo in self.setup_order:
+            output = check_output(['./setup.sh', 'deps'], cwd=self._get_repo_dir(repo))
+            print(repo)
+            print(output)
+
     def setup_main(self):
         for repo in self.setup_order:
             output = check_output(['./setup.sh'], cwd=self._get_repo_dir(repo))
@@ -124,6 +130,7 @@ def get_full_repo_description(protocol, remote, organization, repo):
 default_config_file = 'main.ini'
 commands = {
     'bootstrap': 'bootstrap_all',
+    'deps': 'deps_main',
     'reset': 'reset_all',
     'clear': 'clear_all',
     'clone': 'clone_all',
