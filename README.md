@@ -34,10 +34,14 @@ To setup with cloned repos (./setup.sh)
 
 	./concierge setup
 
+To see the status of all repos (git status)
+
+	./concierge status
+
 To run all runable repos (./run.sh)
 
 	./concierge run
 
 To stop all running repos (pkill)
 
-	./concierge stop
+	./concierge kill
