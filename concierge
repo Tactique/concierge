@@ -27,14 +27,14 @@ def check_output(*popenargs, **kwargs):
 
 
 class Concierge:
-    def __init__(self, config_file, dir_path=None):
-        if dir_path is None:
+    def __init__(self, config_file, project_root=None):
+        if project_root is None:
             try:
-                self.dir_path = os.environ['ROOTIQUE']
+                self.project_root = os.environ['ROOTIQUE']
             except KeyError:
-                raise Exception("Must either set dir_path or have $ROOTIQUE defined")
+                raise Exception("Must either set project_root or have $ROOTIQUE defined")
         else:
-            self.dir_path = dir_path
+            self.project_root = project_root
         config = configparser.SafeConfigParser()
         config.read(config_file)
         repo_section = 'repos'
@@ -48,10 +48,10 @@ class Concierge:
         self.organization = config.get(git_section, 'organization')
 
     def _mkdir_repos(self):
-        os.mkdir(self.dir_path)
+        os.mkdir(self.project_root)
 
     def _get_repo_dir(self, repo):
-        return os.path.join(self.dir_path, repo)
+        return os.path.join(self.project_root, repo)
 
     def bootstrap_all(self):
         self.clone_all()
@@ -77,7 +77,7 @@ class Concierge:
         for repo in self.repos:
             full_repo_description = get_full_repo_description(
                 self.protocol, self.remote, self.organization, repo)
-            output = check_output(['git', 'clone', full_repo_description], cwd=self.dir_path)
+            output = check_output(['git', 'clone', full_repo_description], cwd=self.project_root)
             print(repo)
             print(output)
 
