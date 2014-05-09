@@ -29,7 +29,10 @@ def check_output(*popenargs, **kwargs):
 class Concierge:
     def __init__(self, config_file, dir_path=None):
         if dir_path is None:
-            self.dir_path = os.path.join(file_dir, 'repos')
+            try:
+                self.dir_path = os.environ['ROOTIQUE']
+            except KeyError:
+                raise Exception("Must either set dir_path or have $ROOTIQUE defined")
         else:
             self.dir_path = dir_path
         config = configparser.SafeConfigParser()
