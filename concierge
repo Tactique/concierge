@@ -27,20 +27,14 @@ def check_output(*popenargs, **kwargs):
 
 
 class Concierge:
-    def __init__(self, config_file, project_root=None):
-        if project_root is None:
-            try:
-                self.project_root = os.environ['ROOTIQUE']
-            except KeyError:
-                raise Exception("Must either set project_root or have $ROOTIQUE defined")
-        else:
-            self.project_root = project_root
+    def __init__(self, config_file):
         config = configparser.SafeConfigParser()
         config.read(config_file)
         repo_section = 'repos'
         self.repos = config.get(repo_section, 'repos').split(',')
         self.setup_order = config.get(repo_section, 'setup_order').split(',')
         self.run_repos = config.get(repo_section, 'run_repos').split(',')
+        self.project_root= os.path.expandvars(config.get(repo_section, 'project_root'))
 
         git_section = 'git'
         self.protocol = config.get(git_section, 'protocol')
