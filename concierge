@@ -35,6 +35,9 @@ class Concierge:
         self.setup_order = config.get(repo_section, 'setup_order').split(',')
         self.run_repos = config.get(repo_section, 'run_repos').split(',')
         self.project_root= os.path.expandvars(config.get(repo_section, 'project_root'))
+        if self.project_root.startswith("$"):
+            print("project root environment variable not set: %s" % self.project_root)
+            sys.exit(1)
 
         git_section = 'git'
         self.protocol = config.get(git_section, 'protocol')
